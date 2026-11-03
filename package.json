@@ -1,0 +1,11 @@
+{
+  "name": "objectifs-pwa",
+  "version": "0.13.0-m0",
+  "private": true,
+  "description": "Objectifs — socle PWA (jalon M0, US34). Build Node zéro dépendance (ADR-13).",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node build.js && node --test tests/domain.test.js tests/livraison.test.js && node tests/bdd/runner.js"
+  }
+}

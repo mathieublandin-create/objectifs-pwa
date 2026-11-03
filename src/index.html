@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1e40af" />
+  <title>Objectifs — socle M0</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🎯 Objectifs</h1>
+    <p id="version" class="version"></p>
+  </header>
+  <div id="banniere-stockage" class="banniere" role="alert" hidden>
+    Stockage indisponible dans ce navigateur : utilisez l'export pour conserver vos données.
+  </div>
+  <nav aria-label="Actions du socle">
+    <label class="bouton" for="import-fichier">⬆ Importer un export (JSON)</label>
+    <input id="import-fichier" type="file" accept="application/json,.json" hidden />
+    <button id="export-bouton" type="button">⬇ Exporter mes données (JSON)</button>
+  </nav>
+  <p id="message" role="status" aria-live="polite"></p>
+  <main>
+    <section aria-labelledby="titre-objectifs">
+      <h2 id="titre-objectifs">Objectifs</h2>
+      <ul id="liste-objectifs"></ul>
+      <p id="vide-objectifs" class="vide" hidden>Aucun objectif — importez votre export depuis la maquette ou créez vos objectifs au M1.</p>
+    </section>
+    <section aria-labelledby="titre-taches">
+      <h2 id="titre-taches">Tâches</h2>
+      <ul id="liste-taches"></ul>
+      <p id="vide-taches" class="vide" hidden>Aucune tâche.</p>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

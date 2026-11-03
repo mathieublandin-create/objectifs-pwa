@@ -1,0 +1,30 @@
+/* Socle M0 — reprise du vocabulaire visuel de la maquette (US34-c8, I5 : lisible desktop large). */
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body {
+  margin: 0 auto; max-width: 1024px; padding: 16px;
+  font-family: system-ui, sans-serif; font-size: 16px; color: #1e293b; background: #f8fafc;
+}
+header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+h1 { font-size: 24px; margin: 8px 0; }
+.version { color: #64748b; font-size: 13px; margin: 0; }
+.banniere {
+  background: #fef3c7; border: 1px solid #f59e0b; color: #92400e;
+  padding: 10px 12px; border-radius: 8px; margin: 8px 0; font-size: 14px;
+}
+nav { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+.bouton, button {
+  display: inline-block; min-height: 44px; padding: 10px 14px; border-radius: 8px;
+  border: 1px solid #bfdbfe; background: #eff6ff; color: #1e40af;
+  font-size: 15px; cursor: pointer;
+}
+.bouton:hover, button:hover { background: #dbeafe; }
+:focus-visible { outline: 3px solid #1e40af; outline-offset: 2px; }
+#message { min-height: 24px; font-size: 14px; margin: 4px 0; }
+#message.erreur { color: #b91c1c; }
+main section { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin: 12px 0; }
+h2 { font-size: 18px; margin: 4px 0 8px; }
+ul { list-style: none; padding: 0; margin: 0; }
+li { padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 15px; }
+li .meta { color: #64748b; font-size: 13px; margin-left: 8px; }
+.vide { color: #64748b; font-size: 14px; }
