@@ -1,0 +1,26 @@
+import { isoLocal } from "../domain/domaine";
+
+export const STORAGE_KEY = "objectifs-app-data";
+export const PROBE_KEY = STORAGE_KEY + "::sonde";
+
+export type StatutStockage = "indisponible" | "ephemere" | "persistant";
+
+export function cleStockage(accountId: string | null): string {
+  return accountId ? STORAGE_KEY + "::" + accountId : STORAGE_KEY;
+}
+
+export interface PortStockage {
+  lire(cle: string): string | null;
+  ecrire(cle: string, valeur: string): void;
+}
+
+export function diagnosticStockage(ls: PortStockage | null, now: Date): StatutStockage {
+  if (!ls) return "indisponible";
+  try {
+    if (ls.lire(PROBE_KEY)) return "persistant";
+    ls.ecrire(PROBE_KEY, isoLocal(now));
+    return "ephemere";
+  } catch {
+    return "indisponible";
+  }
+}
