@@ -17,7 +17,7 @@ Tu reprends le projet **« Objectifs »**, une application **personnelle** de ge
 
 ## 2. Phase d'initialisation (à exécuter maintenant, dans cet ordre)
 
-1. **Vérifie l'arborescence** (§Annexe) : 14 fichiers sources recettés v0.13.0-m0 + `docs/` (7 documents de référence + ce fichier) + `README.md`. Puis vérifie : `node build.js` (11 fichiers dans `dist/`), `node --test tests/domain.test.js tests/livraison.test.js`, `node tests/bdd/runner.js` — tout doit être vert (attendu : tests 0 échec, BDD 5/5). **Interdiction d'utiliser `npm install` ou d'ajouter une quelconque dépendance** (ADR-13/14 : zéro dépendance, build rejouable bit à bit). **Ne modifie aucun fichier recetté avant ces vérifications** ; ensuite, toute modification passe par le cycle v5 (§6).
+1. **Vérifie l'arborescence** (§Annexe) : 14 fichiers sources recettés v0.13.0-m0 + `docs/` (7 documents de référence + ce fichier) + `README.md`. Puis vérifie : `node build.js` (11 fichiers dans `dist/`), `node --test tests/domain.test.js tests/livraison.test.js`, `node tests/bdd/runner.js` — tout doit être vert (attendu : tests 0 échec, BDD 5/5). **Interdiction d'utiliser `npm install` ou d'ajouter une quelconque dépendance** (ADR-13/14 : zéro dépendance, build rejouable bit à bit). **Ne modifie aucun fichier recetté avant ces vérifications** ; ensuite, toute modification passe par le cycle v6 (§6).
 2. **Initialise le dépôt distant** : `https://github.com/mathieublandin-create/objectifs-pwa.git` (existe, vide — compte de Mathieu). Crée `.gitignore` :
    ```
    dist/
@@ -118,21 +118,24 @@ Le projet est piloté par une **ferme agentique multi-rôles** que tu dois **rej
 - **Développeur** : code + step definitions BDD + tests + rapport de tests ; **relit la conception avant de coder**.
 - **Chef de projet technique (CPM)** : planning, priorisation, charge, reporting, risques ; escalade les points bloquants à Mathieu.
 
-**Cycle v5 (pour chaque US ou évolution)** :
-1. Raffinement de l'US par l'analyste ; **rédaction de la `.feature`** (un scénario par critère + scénarios de limite, en français, vocabulaire figé uniquement, comportements observables par l'utilisateur uniquement).
-2. Contrôle d'explicité + readiness par le RT (critères non ambigus, `.feature` couvrant tous les critères, steps réalisables) ; l'RT valide formellement le passage en conception.
+**Cycle v6 (pour chaque US ou évolution — v5 + revue de lancement, revue d'entrée en test, `.feature` à la readiness, équipe extensible ; décision client du 03/11/2026, guide v1.7 §5.1)** :
+1. Raffinement de l'US par l'analyste.
+2. Contrôle d'explicité + readiness par le RT ; **dès que l'US est prête à démarrer le dev, le responsable fonctionnel (analyste métier) écrit la `.feature`** (tests Gherkin : un scénario par critère + limites, en français, vocabulaire figé, comportements observables uniquement) ; le RT vérifie couverture et steps réalisables, puis valide formellement le passage en conception.
 3. Conception par le RT (+ plan de tests macro) ; **validation de conception par l'architecte** (conformité DAT/ADR) ; relecture par le développeur.
-4. **Développement TDD strict** : red (steps + tests d'abord) → green (comportement minimal) → refactor ; non-régression rejouée à chaque livraison.
-5. Revue de code par le RT (normes + conception, TDD respecté — les tests ont **précédé** le code, pas de dette non justifiée, sécurité).
-6. Tests du développeur jusqu'au vert complet : **US « ready » = suite BDD de son périmètre ET non-régression des US antérieures vertes.**
-7. Revue de fin de développement, puis **recette métier** par l'analyste (parcours des critères + bout-en-bout + limites) ; verdict consigné.
-8-9. Boucle correction (points formulés en critères testables, l'analyste peut ajouter des `.feature`) → re-recette, jusqu'à acceptation ou **escalade à Mathieu** avec options argumentées.
+4. **Revue de lancement RT ↔ développeur** (avant codage) : lève les ambiguïtés résiduelles et aligne les attendus de chaque participant ; aucun codage avant clôture.
+5. **Développement TDD strict sur une feature branch dédiée (`feat/USxx-…`)** : red (steps + tests d'abord) → green (comportement minimal) → refactor ; non-régression rejouée à chaque livraison.
+6. **Relecture du code par le développeur, puis revue d'entrée en test** : le développeur présente ce qu'il a fait ; le responsable fonctionnel juge que **la recette est jouable**.
+7. Revue de code par le RT (normes + conception, TDD respecté — les tests ont **précédé** le code, pas de dette non justifiée, sécurité).
+8. Tests du développeur jusqu'au vert complet : **US « ready » = suite BDD de son périmètre ET non-régression des US antérieures vertes.**
+9. Revue de fin de développement, puis **recette métier** par l'analyste (parcours des critères + bout-en-bout + limites) ; verdict consigné.
+10-11. Boucle correction (points formulés en critères testables, l'analyste peut ajouter des `.feature`) → re-recette, jusqu'à acceptation ou **escalade à Mathieu** avec options argumentées.
 
-**Gouvernance anti-boucles (v2 — s'applique à toi)** :
-- Un seul orchestrateur route les phases ; chaque agent produit, n'interpelle pas un autre agent.
+**Gouvernance anti-boucles (v3 — s'applique à toi)** :
+- Un seul orchestrateur route les phases ; chaque agent produit, n'interpelle pas un autre agent. **L'orchestrateur adapte le modèle utilisé à chaque rôle** pour une exécution efficiente par persona (décision client du 03/11/2026).
 - Tout échange passe par un **livrable écrit** ; une information manquante devient une **interprétation consignée (Ix)** et le travail continue — jamais de question d'agent à agent.
 - Les interprétations ne sont arbitrées que par l'humain aux points de validation, ou en revue de fin de cycle.
 - Plafonds : revue de code max 2 allers-retours ; recette max 2 rejets ; au-delà → revue à trois + arbitrage humain. Aucune boucle ne tourne en silence.
+- **Plusieurs développeurs peuvent être instanciés en parallèle** quand le besoin existe, après **vérification préalable du risque de modification des mêmes fichiers** (analyse d'impact fichiers avant lancement) ; chaque développeur travaille dans **sa propre branche `feat/USxx-…`**.
 - Exécute un cycle complet en une session sans repasser par l'humain entre phases, sauf aux points de validation humaine obligatoires (readiness, anomalies bloquantes, arbitrage).
 
 ## 7. Suite prévue (après l'initialisation)
