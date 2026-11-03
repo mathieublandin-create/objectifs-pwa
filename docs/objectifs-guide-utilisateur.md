@@ -6,7 +6,7 @@ type: "text/markdown"
 
 # 🎯 Objectifs — Guide utilisateur
 
-> **Version v1.0** — 20/10/2026. Couvre le socle PWA du jalon M0 (v0.13.0-m0) ; les sections « à venir » seront complétées aux jalons M1–M4.
+> **Version v1.1** — 03/11/2026 (v1.0 du 20/10/2026 : couvre le socle PWA du jalon M0 v0.13.0-m0 ; v1.1 : URL de production renseignée — déploiement GitHub Pages en ligne). Les sections « à venir » seront complétées aux jalons M1–M4.
 > Ce guide accompagne chaque livraison : il est mis à jour à chaque évolution visible par l'utilisateur (règle consignée au pilotage).
 
 ## 1. Présentation
@@ -30,6 +30,8 @@ Deux supports :
 1. Construire : `npm run build` dans le dossier `objectifs-pwa` → le dossier `dist/` est prêt (aucune dépendance à installer).
 2. Héberger le contenu de `dist/` sur un hébergement statique HTTPS (ex. pages GitHub, Netlify, bucket statique).
 3. Ouvrir l'URL dans le navigateur : l'accueil affiche « App v0.13.0-m0 · schéma v9 ».
+
+> **Le socle est déjà en ligne** : application déployée par GitHub Actions à l'URL **https://mathieublandin-create.github.io/objectifs-pwa/** (vérifiée en recette le 03/11/2026 — HTTP 200). Utilisez directement cette URL pour l'installation (§3.2, §3.3).
 
 ### 3.2 Installer l'application sur PC (Chrome/Edge)
 
