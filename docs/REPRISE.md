@@ -144,6 +144,7 @@ Le projet est piloté par une **ferme agentique multi-rôles** que tu dois **rej
 2. **Guide utilisateur** (`docs/objectifs-guide-utilisateur.md`, v1.0, couvre installation + mise à jour) ; règle : mis à jour à chaque livraison modifiant l'expérience utilisateur, avant clôture.
 3. **Historisation** : **un commit + un tag versionné par livraison** (`v0.13.0-m0`, etc.) et les livrables documentaires versionnés dans `docs/` — une livraison n'est close que lorsque ses livrables sont archivés. Chaque document reste la propriété de son rôle (§6).
 4. **Persistance entre sessions** : le dépôt distant **est** la persistance — pousse chaque livraison.
+5. **Organisation par lots (décision client du 03/11/2026, guide v1.8 §5.1)** : les évolutions sont traitées **par lots à périmètre gelé** (2–4 US) ; chaque US suit le cycle v6 complet ; **entre chaque lot, une phase de test utilisateur en conditions réelles avec Mathieu**, timeboxée et planifiée comme jalon (cohérent avec le guichet humain groupé de la gouvernance v3). Risques consignés : délai de détection inter-lots (mitigé par la non-régression BDD à chaque livraison), gonflement de lot (gel au lancement), disponibilité du testeur, calendrier (timebox).
 
 ## 8. Points d'attention immédiats
 
