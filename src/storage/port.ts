@@ -14,6 +14,11 @@ export interface PortStockage {
   ecrire(cle: string, valeur: string): void;
 }
 
+export interface PortStockageAsync {
+  lire(cle: string): Promise<string | null>;
+  ecrire(cle: string, valeur: string): Promise<void>;
+}
+
 export function diagnosticStockage(ls: PortStockage | null, now: Date): StatutStockage {
   if (!ls) return "indisponible";
   try {

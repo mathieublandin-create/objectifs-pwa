@@ -130,13 +130,14 @@ Le projet est piloté par une **ferme agentique multi-rôles** que tu dois **rej
 9. Revue de fin de développement, puis **recette métier** par l'analyste (parcours des critères + bout-en-bout + limites) ; verdict consigné.
 10-11. Boucle correction (points formulés en critères testables, l'analyste peut ajouter des `.feature`) → re-recette, jusqu'à acceptation ou **escalade à Mathieu** avec options argumentées.
 
-**Gouvernance anti-boucles (v3 — s'applique à toi)** :
+**Gouvernance anti-boucles (v4 — s'applique à toi)** :
 - Un seul orchestrateur route les phases ; chaque agent produit, n'interpelle pas un autre agent. **L'orchestrateur adapte le modèle utilisé à chaque rôle** pour une exécution efficiente par persona (décision client du 03/11/2026).
 - Tout échange passe par un **livrable écrit** ; une information manquante devient une **interprétation consignée (Ix)** et le travail continue — jamais de question d'agent à agent.
 - Les interprétations ne sont arbitrées que par l'humain aux points de validation, ou en revue de fin de cycle.
 - Plafonds : revue de code max 2 allers-retours ; recette max 2 rejets ; au-delà → revue à trois + arbitrage humain. Aucune boucle ne tourne en silence.
 - **Plusieurs développeurs peuvent être instanciés en parallèle** quand le besoin existe, après **vérification préalable du risque de modification des mêmes fichiers** (analyse d'impact fichiers avant lancement) ; chaque développeur travaille dans **sa propre branche `feat/USxx-…`**.
 - Exécute un cycle complet en une session sans repasser par l'humain entre phases, sauf aux points de validation humaine obligatoires (readiness, anomalies bloquantes, arbitrage).
+- **Comptage régulier du code (décision client du 03/11/2026)** : l'orchestrateur compte le code **régulièrement** (nombre de fichiers et de lignes, `src/` et `tests/`) et consigne le compte dans le pilotage à **chaque livraison et en fin de session** — pour détecter toute perte (limite de session, incident, restauration incomplète). En cas d'écart anormal à la baisse, ne pas continuer : restaurer depuis le dépôt/archive et consigner l'incident.
 
 ## 7. Suite prévue (après l'initialisation)
 
