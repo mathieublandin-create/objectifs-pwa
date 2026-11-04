@@ -10,9 +10,10 @@ interface Props {
   now: Date;
   genId: () => string;
   majData: (d: AppData) => void;
+  onOuvrirFiche: (taskId: string) => void;
 }
 
-export function Taches({ data, now, genId, majData }: Props) {
+export function Taches({ data, now, genId, majData, onOuvrirFiche }: Props) {
   const [titre, setTitre] = useState("");
   const [goalId, setGoalId] = useState("");
   const [prio, setPrio] = useState<Prio>("moyenne");
@@ -65,7 +66,7 @@ export function Taches({ data, now, genId, majData }: Props) {
           <ul>
             {gr.items.map((t) => (
               <li key={t.id}>
-                {t.title} — {h(t.restant)} restantes
+                <button aria-label={`Ouvrir la fiche de ${t.title}`} style={{ minHeight: 44 }} onClick={() => onOuvrirFiche(t.id)}>{t.title}</button> — {h(t.restant)} restantes
                 {prochainEtat(t) !== t.etat && (
                   <button aria-label={`Passer ${t.title} à ${etatLabel[prochainEtat(t)]}`} style={{ minHeight: 44, marginLeft: 8 }}
                     onClick={() => transition(t, prochainEtat(t))}>
