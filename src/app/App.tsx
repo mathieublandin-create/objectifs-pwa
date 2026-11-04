@@ -5,6 +5,7 @@ import { Taches } from "../screens/Taches";
 import { Calendrier } from "../screens/Calendrier";
 import { Stats } from "../screens/Stats";
 import { Rituel } from "../screens/Rituel";
+import { Google } from "../screens/Google";
 import { FicheTache } from "../screens/FicheTache";
 import { JournalEcran } from "../screens/Journal";
 import { ajouterEvenement, evenementsDeDiff, journalCle, type Journal } from "../journal/journal";
@@ -15,7 +16,7 @@ import { APP_VERSION_M1 } from "../domaineConstantes";
 import { genIdSeq, horlogeSysteme } from "../clock/horloge";
 import type { AppData } from "../domain/types";
 
-type Onglet = "accueil" | "objectifs" | "taches" | "calendrier" | "rituel" | "stats" | "journal";
+type Onglet = "accueil" | "objectifs" | "taches" | "calendrier" | "rituel" | "stats" | "journal" | "google";
 
 export function App() {
   const [data, setData] = useState<AppData | null>(null);
@@ -65,10 +66,10 @@ export function App() {
     <>
       {erreur && <p role="alert" style={{ background: "#fef3c7", color: "#92400e", padding: "0.5rem 1rem" }}>⚠️ {erreur}</p>}
       <nav aria-label="Navigation" style={{ display: "flex", gap: 8, padding: "0.5rem 1rem", flexWrap: "wrap" }}>
-        {(["accueil", "objectifs", "taches", "calendrier", "rituel", "stats", "journal"] as Onglet[]).map((o) => (
+        {(["accueil", "objectifs", "taches", "calendrier", "rituel", "stats", "journal", "google"] as Onglet[]).map((o) => (
           <button key={o} aria-current={onglet === o ? "page" : undefined} style={{ minHeight: 44 }}
             onClick={() => setOnglet(o)}>
-            {o === "accueil" ? "Accueil" : o === "objectifs" ? "Objectifs" : o === "taches" ? "Tâches" : o === "calendrier" ? "Calendrier" : o === "rituel" ? "Rituel" : o === "stats" ? "Stats" : "Journal"}
+            {o === "accueil" ? "Accueil" : o === "objectifs" ? "Objectifs" : o === "taches" ? "Tâches" : o === "calendrier" ? "Calendrier" : o === "rituel" ? "Rituel" : o === "stats" ? "Stats" : o === "journal" ? "Journal" : "Google"}
           </button>
         ))}
       </nav>
@@ -79,6 +80,7 @@ export function App() {
       {onglet === "rituel" && <Rituel data={data} now={now} onOuvrirFiche={setFicheId} />}
       {onglet === "stats" && <Stats data={data} now={now} />}
       {onglet === "journal" && <JournalEcran journal={journal} />}
+      {onglet === "google" && <Google data={data} now={now} majData={majData} />}
       {fiche && <FicheTache data={data} task={fiche} now={now} genId={genId} majData={majData} onClose={() => setFicheId(null)} />}
     </>
   );
