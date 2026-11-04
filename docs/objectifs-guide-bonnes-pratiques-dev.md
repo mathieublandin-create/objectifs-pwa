@@ -217,6 +217,19 @@ La maquette est un **mono-fichier canvas React** avec des contraintes de runtime
 
 Les revues de code du responsable technique sont consignées ici : cible, date, constats localisés (bloquant / non bloquant), verdict.
 
+### Revue n° 2 — Branche `feat/M1-portage` (portage M1) — 03/11/2026
+
+**Cible** : domaine pur transplanté (`src/domain/domaine.ts`, 696 l.), journal US22 (`src/journal/journal.ts`), persistance (`src/storage/`), 7 écrans + app (`src/screens/`, `src/app/`). **Constats bloquants : aucun.** Constats non bloquants :
+
+| # | Constat localisé | Règle du guide | Statut / action |
+| --- | --- | --- | --- |
+| 1 | Import `cloturerTache` non utilisé dans `src/screens/Taches.tsx` | normes (pas d'import mort) | À nettoyer (dev A) |
+| 2 | Chaînes d'onglets en dur dans `App.tsx` (libellés français) | §2.1 vocabulaire figé | Accepté — vocabulaire métier français conforme |
+
+**Constats positifs** : composants tous < 150 lignes (max 107) ; domaine et journal 100 % purs (aucun `localStorage`/`Date.now()`/`Math.random()`/`fetch` — vérifié par grep) ; horloge et ids injectés (dette A-006 remboursée côté domaine) ; persistance derrière le port (ADR-03) ; point de passage unique `majData` avec trace US22 par diff ; tests 29/29 Vitest + `tsc` strict OK + build Vite OK ; non-régression M0 11/11 + BDD 5/5.
+
+**Verdict** : **conforme au guide v1.10** — poursuite du portage autorisée.
+
 ### Revue n° 1 — Maquette v0.11.0 (schéma v9) — 19/10/2026
 
 **Cible** : maquette de référence mono-fichier, v0.11.0 (itération 9 soldée, US27/US32 livrées), relue intégralement au regard du guide v1.0. **Constats bloquants : aucun.** Écarts non bloquants :
