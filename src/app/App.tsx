@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Accueil } from "../screens/Accueil";
 import { Objectifs } from "../screens/Objectifs";
 import { Taches } from "../screens/Taches";
+import { Calendrier } from "../screens/Calendrier";
+import { FicheTache } from "../screens/FicheTache";
 import { chargerDonnees, sauvegarderDonnees } from "../storage/donnees";
 import { adaptateurIndexedDB } from "../storage/indexeddb";
 import { cleStockage } from "../storage/port";
@@ -9,12 +11,13 @@ import { APP_VERSION_M1 } from "../domaineConstantes";
 import { genIdSeq, horlogeSysteme } from "../clock/horloge";
 import type { AppData } from "../domain/types";
 
-type Onglet = "accueil" | "objectifs" | "taches";
+type Onglet = "accueil" | "objectifs" | "taches" | "calendrier";
 
 export function App() {
   const [data, setData] = useState<AppData | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
   const [onglet, setOnglet] = useState<Onglet>("accueil");
+  const [ficheId, setFicheId] = useState<string | null>(null);
 
   useEffect(() => {
     const port = adaptateurIndexedDB();
@@ -34,18 +37,23 @@ export function App() {
   if (!data) return <main style={{ fontFamily: "sans-serif", padding: "2rem" }}>Chargement…</main>;
   const now = horlogeSysteme.maintenant();
   const genId = genIdSeq();
+  const fiche = data.tasks.find((t) => t.id === ficheId);
   return (
     <>
       {erreur && <p role="alert" style={{ background: "#fef3c7", color: "#92400e", padding: "0.5rem 1rem" }}>⚠️ {erreur}</p>}
-      <nav aria-label="Navigation" style={{ display: "flex", gap: 8, padding: "0.5rem 1rem" }}>
-        {(["accueil", "objectifs", "taches"] as Onglet[]).map((o) => (
+      <nav aria-label="Navigation" style={{ display: "flex", gap: 8, padding: "0.5rem 1rem", flexWrap: "wrap" }}>
+        {(["accueil", "objectifs", "taches", "calendrier"] as Onglet[]).map((o) => (
           <button key={o} aria-current={onglet === o ? "page" : undefined} style={{ minHeight: 44 }}
-            onClick={() => setOnglet(o)}>{o === "accueil" ? "Accueil" : o === "objectifs" ? "Objectifs" : "Tâches"}</button>
+            onClick={() => setOnglet(o)}>
+            {o === "accueil" ? "Accueil" : o === "objectifs" ? "Objectifs" : o === "taches" ? "Tâches" : "Calendrier"}
+          </button>
         ))}
       </nav>
       {onglet === "accueil" && <Accueil data={data} now={now} majData={majData} versionApp={APP_VERSION_M1} />}
       {onglet === "objectifs" && <Objectifs data={data} now={now} genId={genId} majData={majData} />}
-      {onglet === "taches" && <Taches data={data} now={now} genId={genId} majData={majData} />}
+      {onglet === "taches" && <Taches data={data} now={now} genId={genId} majData={majData} onOuvrirFiche={setFicheId} />}
+      {onglet === "calendrier" && <Calendrier data={data} now={now} majData={majData} onOuvrirFiche={setFicheId} />}
+      {fiche && <FicheTache data={data} task={fiche} now={now} genId={genId} majData={majData} onClose={() => setFicheId(null)} />}
     </>
   );
 }
