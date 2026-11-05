@@ -138,6 +138,7 @@ Le projet est piloté par une **ferme agentique multi-rôles** que tu dois **rej
 - **Plusieurs développeurs peuvent être instanciés en parallèle** quand le besoin existe, après **vérification préalable du risque de modification des mêmes fichiers** (analyse d'impact fichiers avant lancement) ; chaque développeur travaille dans **sa propre branche `feat/USxx-…`**.
 - Exécute un cycle complet en une session sans repasser par l'humain entre phases, sauf aux points de validation humaine obligatoires (readiness, anomalies bloquantes, arbitrage).
 - **Comptage régulier du code (décision client du 03/11/2026)** : l'orchestrateur compte le code **régulièrement** (nombre de fichiers et de lignes, `src/` et `tests/`) et consigne le compte dans le pilotage à **chaque livraison et en fin de session** — pour détecter toute perte (limite de session, incident, restauration incomplète). En cas d'écart anormal à la baisse, ne pas continuer : restaurer depuis le dépôt/archive et consigner l'incident.
+- **Revue de code automatique (décision client du 05/11/2026)** : l'orchestrateur lance la **revue de code par le RT dès la livraison du développeur, sans demande de validation humaine** (guide v1.11) ; les points de validation humaine obligatoires restent inchangés (readiness, anomalies bloquantes, arbitrage).
 
 ## 7. Suite prévue (après l'initialisation)
 
