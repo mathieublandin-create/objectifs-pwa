@@ -1,11 +1,24 @@
 {
   "name": "objectifs-pwa",
-  "version": "0.13.0-m0",
+  "version": "0.14.0-m1",
   "private": true,
-  "description": "Objectifs — socle PWA (jalon M0, US34). Build Node zéro dépendance (ADR-13).",
+  "description": "Objectifs — portage M1 (React 18 + TypeScript strict + Vite, ADR-15 amendant ADR-13). Socle M0 v0.13.0-m0 conservé en branche main.",
   "type": "module",
   "scripts": {
-    "build": "node build.js",
-    "test": "node build.js && node --test tests/domain.test.js tests/livraison.test.js && node tests/bdd/runner.js"
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "test:m0": "node --test tests/domain.test.js tests/livraison.test.js && node tests/bdd/runner.js"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
   }
 }

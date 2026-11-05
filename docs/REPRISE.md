@@ -10,7 +10,7 @@ Tu reprends le projet **« Objectifs »**, une application **personnelle** de ge
   2. **Le livrable PWA `objectifs-pwa`** (multi-fichiers, zéro dépendance) — socle **M0 / US34** livré le 20/10/2026 en **v0.13.0-m0**, recette métier : **« Validée avec réserves »** (9/9 critères conformes ; les réserves sont les vérifications en conditions réelles de l'action A-014). **Les sources recettées sont déjà présentes à la racine du dépôt — ne les réécris pas, vérifie-les (§2).**
 - **Feuille de route** (planning replanifié du 19/10, jalons en jours ouvrés) :
   - **M0 — Socle PWA** : **terminé, livré en avance** (20/10 pour un jalon 27/10–02/11).
-  - **M1 — Portage** (03/11 → 13/11) : transplanter le domaine pur et les écrans de la maquette vers le livrable (React 18 + TypeScript + Vite, IndexedDB), tests verts, round-trip export/import, dette de la revue n°1 remboursée.
+  - **M1 — Portage** (03/11 → 13/11) : **lancé le 03/11 (décision client « Go M1 »)** — branche `feat/M1-portage`, ADR-15 (Vite + React 18 + TS strict + Vitest) : transplanter le domaine pur et les écrans de la maquette vers le livrable (IndexedDB), tests verts, round-trip export/import, dette de la revue n°1 remboursée. Premier incrément livré : structure cible + domaine pur transplanté à l'identique (horloge/ids injectés, A-006) + 20 tests Vitest verts + build Vite OK ; M0 sur `main` inchangé (11/11 + BDD 5/5).
   - **M2 — Google réel** (16/11 → 24/11) : OAuth Google « en production » (ADR-12), Drive `appDataFolder` (ADR-10), Calendar réel.
   - **M3 — Notifications** (25/11 → 01/12) : rappels Google Calendar natifs pour les rituels (ADR-11).
 - **Décisions client actées** : D-1 (persistance distante = Google Drive `appDataFolder`, pas de serveur) ; D-2 (notifications = rappels Google Calendar, TWA écartée, PWA confirmée, portabilité PC exigée).
@@ -130,13 +130,14 @@ Le projet est piloté par une **ferme agentique multi-rôles** que tu dois **rej
 9. Revue de fin de développement, puis **recette métier** par l'analyste (parcours des critères + bout-en-bout + limites) ; verdict consigné.
 10-11. Boucle correction (points formulés en critères testables, l'analyste peut ajouter des `.feature`) → re-recette, jusqu'à acceptation ou **escalade à Mathieu** avec options argumentées.
 
-**Gouvernance anti-boucles (v3 — s'applique à toi)** :
+**Gouvernance anti-boucles (v4 — s'applique à toi)** :
 - Un seul orchestrateur route les phases ; chaque agent produit, n'interpelle pas un autre agent. **L'orchestrateur adapte le modèle utilisé à chaque rôle** pour une exécution efficiente par persona (décision client du 03/11/2026).
 - Tout échange passe par un **livrable écrit** ; une information manquante devient une **interprétation consignée (Ix)** et le travail continue — jamais de question d'agent à agent.
 - Les interprétations ne sont arbitrées que par l'humain aux points de validation, ou en revue de fin de cycle.
 - Plafonds : revue de code max 2 allers-retours ; recette max 2 rejets ; au-delà → revue à trois + arbitrage humain. Aucune boucle ne tourne en silence.
 - **Plusieurs développeurs peuvent être instanciés en parallèle** quand le besoin existe, après **vérification préalable du risque de modification des mêmes fichiers** (analyse d'impact fichiers avant lancement) ; chaque développeur travaille dans **sa propre branche `feat/USxx-…`**.
 - Exécute un cycle complet en une session sans repasser par l'humain entre phases, sauf aux points de validation humaine obligatoires (readiness, anomalies bloquantes, arbitrage).
+- **Comptage régulier du code (décision client du 03/11/2026)** : l'orchestrateur compte le code **régulièrement** (nombre de fichiers et de lignes, `src/` et `tests/`) et consigne le compte dans le pilotage à **chaque livraison et en fin de session** — pour détecter toute perte (limite de session, incident, restauration incomplète). En cas d'écart anormal à la baisse, ne pas continuer : restaurer depuis le dépôt/archive et consigner l'incident.
 
 ## 7. Suite prévue (après l'initialisation)
 
