@@ -137,6 +137,7 @@ Le projet est piloté par une **ferme agentique multi-rôles** que tu dois **rej
 - Plafonds : revue de code max 2 allers-retours ; recette max 2 rejets ; au-delà → revue à trois + arbitrage humain. Aucune boucle ne tourne en silence.
 - **Plusieurs développeurs peuvent être instanciés en parallèle** quand le besoin existe, après **vérification préalable du risque de modification des mêmes fichiers** (analyse d'impact fichiers avant lancement) ; chaque développeur travaille dans **sa propre branche `feat/USxx-…`**.
 - Exécute un cycle complet en une session sans repasser par l'humain entre phases, sauf aux points de validation humaine obligatoires (readiness, anomalies bloquantes, arbitrage).
+- **Revue de code automatique (décision client du 05/11/2026)** : l'orchestrateur lance la **revue de code par le RT dès la livraison du développeur, sans demande de validation humaine** (guide v1.11) ; les points de validation humaine obligatoires restent inchangés (readiness, anomalies bloquantes, arbitrage).
 
 ## 7. Suite prévue (après l'initialisation)
 
