@@ -30,25 +30,37 @@ export function Google({ data, now, majData }: Props) {
   const planifiees = actives(data.tasks).filter((t) => t.date);
 
   return (
-    <section aria-label="Google">
-      <h2>Google (US14/US1)</h2>
-      {data.account ? (
-        <p>Connecté : <b>{data.account.nom}</b> ({data.account.email}){" "}
-          <button style={{ minHeight: 44 }} onClick={() => majData({ ...data, account: null })}>Déconnecter</button></p>
-      ) : (
-        <p>
-          <label>E-mail du compte Google <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ minHeight: 44 }} /></label>{" "}
-          <button style={{ minHeight: 44 }} onClick={connecter}>Connecter</button>
-        </p>
-      )}
-      {erreur && <p role="alert" style={{ background: "#fee2e2", color: "#991b1b", padding: "0.5rem" }}>⚠️ {erreur}</p>}
-      <button style={{ minHeight: 44 }} onClick={lancerSync} disabled={!data.account}>Synchroniser l'agenda</button>
-      <h3>Tâches planifiées ({planifiees.length})</h3>
-      <ul>
-        {planifiees.map((t) => (
-          <li key={t.id}>{t.title} — {t.date} — {statutSyncTache(t, data.agenda, now)}</li>
-        ))}
-      </ul>
-    </section>
+    <>
+      <section className="card" aria-label="Compte Google">
+        <h2>Google (US14/US1)</h2>
+        {data.account ? (
+          <p>Connecté : <b>{data.account.nom}</b> <span className="meta">({data.account.email})</span>{" "}
+            <button className="petite secondaire" onClick={() => majData({ ...data, account: null })}>Déconnecter</button></p>
+        ) : (
+          <>
+            <label className="champ"><span>E-mail du compte Google</span>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            </label>
+            <button className="primaire" onClick={connecter}>Connecter</button>
+          </>
+        )}
+        {erreur && <p role="alert" className="alerte erreur">⚠️ {erreur}</p>}
+      </section>
+      <section className="card" aria-label="Synchronisation agenda">
+        <h3>Agenda</h3>
+        <button className="secondaire" onClick={lancerSync} disabled={!data.account}>Synchroniser l'agenda</button>
+        <h3>Tâches planifiées ({planifiees.length})</h3>
+        {planifiees.length === 0 ? <p className="vide">Aucune tâche planifiée.</p> : (
+          <ul className="liste">
+            {planifiees.map((t) => (
+              <li className="ligne" key={t.id}>
+                {t.title} <span className="meta">{t.date}</span>
+                <span className="badge">{statutSyncTache(t, data.agenda, now)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </>
   );
 }
