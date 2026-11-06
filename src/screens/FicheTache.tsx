@@ -60,43 +60,53 @@ export function FicheTache({ data, task, now, genId, majData, onClose }: Props) 
   const candidatsDeps = data.tasks.filter((t) => t.id !== task.id && !t.supprimee && t.etat !== "terminee");
 
   return (
-    <div role="dialog" aria-label={`Fiche ${task.title}`} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.4)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: "#fff", padding: "1rem", maxWidth: 480, width: "90%", maxHeight: "90vh", overflow: "auto" }}>
+    <div role="dialog" aria-label={`Fiche ${task.title}`} className="dialog-fond">
+      <div className="dialog">
         <h2>Fiche tâche</h2>
-        {erreur && <p role="alert" style={{ background: "#fee2e2", color: "#991b1b", padding: "0.5rem" }}>⚠️ {erreur}</p>}
-        <p><label>Titre <input value={titre} onChange={(e) => setTitre(e.target.value)} style={{ minHeight: 44 }} /></label></p>
-        <p><label>Priorité <select value={prio} onChange={(e) => setPrio(e.target.value as Prio)} style={{ minHeight: 44 }}>
-          <option value="haute">haute</option><option value="moyenne">moyenne</option><option value="basse">basse</option>
-        </select></label></p>
-        <p><label>Date planifiée <input type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ minHeight: 44 }} /></label></p>
+        {erreur && <p role="alert" className="alerte erreur">⚠️ {erreur}</p>}
+        <label className="champ"><span>Titre</span>
+          <input type="text" value={titre} onChange={(e) => setTitre(e.target.value)} />
+        </label>
+        <label className="champ"><span>Priorité</span>
+          <select value={prio} onChange={(e) => setPrio(e.target.value as Prio)}>
+            <option value="haute">haute</option><option value="moyenne">moyenne</option><option value="basse">basse</option>
+          </select>
+        </label>
+        <label className="champ"><span>Date planifiée</span>
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        </label>
         <fieldset>
           <legend>Prérequis (US19)</legend>
-          {bloqueurs.length > 0 && <p>Bloquée par : {bloqueurs.map((b) => b.title).join(", ")}</p>}
+          {bloqueurs.length > 0 && <p className="alerte avertissement">Bloquée par : {bloqueurs.map((b) => b.title).join(", ")}</p>}
           {candidatsDeps.map((t) => (
-            <label key={t.id} style={{ display: "block", minHeight: 44 }}>
+            <label key={t.id} style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 44 }}>
               <input type="checkbox" checked={deps.includes(t.id)} onChange={() => basculeDep(t.id)} /> {t.title}
             </label>
           ))}
         </fieldset>
-        <p>État : <b>{etatLabel[task.etat]}</b> · restantes {h(task.restant)} · passées {h(task.passe)}</p>
+        <p>État : <span className={`badge ${task.prio}`}>{etatLabel[task.etat]}</span> · restantes {h(task.restant)} · passées {h(task.passe)}</p>
         <p>
           {prochainEtat(task) !== task.etat && (
-            <button style={{ minHeight: 44 }} onClick={() => transition(prochainEtat(task))}>→ {etatLabel[prochainEtat(task)]}</button>
+            <button className="secondaire" onClick={() => transition(prochainEtat(task))}>
+              → {etatLabel[prochainEtat(task)]}
+            </button>
           )}
           {task.etat === "terminee" && (
-            <button style={{ minHeight: 44, marginLeft: 8 }} onClick={() => transition("a_planifier")}>↺ ré-ouvrir</button>
+            <button className="secondaire" onClick={() => transition("a_planifier")}>↺ ré-ouvrir</button>
           )}
         </p>
         {task.etat === "en_cours" && (
           <p>
-            <label>Temps total passé (h) <input type="number" min="0" step="0.5" value={total} onChange={(e) => setTotal(e.target.value)} style={{ minHeight: 44, width: 80 }} /></label>
-            <button style={{ minHeight: 44 }} onClick={cloturer}>Clôturer (US2)</button>
+            <label className="champ"><span>Temps total passé (h)</span>
+              <input type="number" min="0" step="0.5" value={total} onChange={(e) => setTotal(e.target.value)} style={{ maxWidth: 110 }} />
+            </label>
+            <button className="secondaire" onClick={cloturer}>Clôturer (US2)</button>
           </p>
         )}
         <p>
-          <button style={{ minHeight: 44 }} onClick={appliquer}>Enregistrer</button>{" "}
-          <button aria-label="Supprimer la tâche" style={{ minHeight: 44 }} onClick={() => { majData(deleteTask(data, task.id)); onClose(); }}>🗑 supprimer</button>{" "}
-          <button style={{ minHeight: 44 }} onClick={onClose}>Fermer</button>
+          <button className="primaire" onClick={appliquer}>Enregistrer</button>{" "}
+          <button className="secondaire" aria-label="Supprimer la tâche" onClick={() => { majData(deleteTask(data, task.id)); onClose(); }}>🗑 supprimer</button>{" "}
+          <button className="secondaire" onClick={onClose}>Fermer</button>
         </p>
       </div>
     </div>

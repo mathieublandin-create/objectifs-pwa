@@ -19,36 +19,58 @@ export function Stats({ data, now }: Props) {
   const objectifs = data.goals.filter((g) => !g.archive);
 
   return (
-    <section aria-label="Statistiques">
-      <h2>Statistiques</h2>
-      <p>Vélocité : <b>{vel.velocite !== null ? `${vel.velocite} h/j` : "—"}</b> ({vel.statut}, {vel.jours} j de saisies)</p>
-      <p>Fiabilité : <b>{fiab.derive !== null ? `${fiab.derive > 0 ? "+" : ""}${fiab.derive} h de dérive` : "—"}</b> sur {fiab.nb} tâches clôturées</p>
-      <p>Reste à faire : <b>{h(restantTotal)}</b> → fin estimée {finGlobale ? finGlobale.toLocaleDateString("fr-FR") : "—"}</p>
-      <h3>Par objectif</h3>
-      <ul>
-        {objectifs.map((g) => {
-          const s = smartCheck(g, taches, vel.velocite, now);
-          const fin = estimeFinObjectif(g, taches, vel.velocite, now);
-          return (
-            <li key={g.id}>
-              <b>{g.title}</b> — reste {h(s.restant)} — SMART {s.score}/100
-              {s.risque && " ⚠️ risque"} — fin estimée {fin ? fin.toLocaleDateString("fr-FR") : "—"}
-            </li>
-          );
-        })}
-      </ul>
-      <h3>Saisies par jour (10 derniers)</h3>
-      <ul>
-        {parJour.slice(0, 10).map((j) => (
-          <li key={j.date}>{j.date} — {h(j.total)}</li>
-        ))}
-      </ul>
-      <h3>Backlog par urgence</h3>
-      <ol>
-        {triParUrgence(taches.filter((t) => t.etat === "a_planifier" || t.etat === "planifiee"), data.goals, taches, vel.velocite, now).slice(0, 10).map((t) => (
-          <li key={t.id}>{t.title} ({h(t.restant)})</li>
-        ))}
-      </ol>
-    </section>
+    <>
+      <section className="card" aria-label="Statistiques globales">
+        <h2>Statistiques</h2>
+        <ul className="liste">
+          <li className="ligne">Vélocité : <b>{vel.velocite !== null ? `${vel.velocite} h/sem` : "—"}</b>
+            <span className="meta">({vel.statut}, {vel.jours} j de saisies)</span></li>
+          <li className="ligne">Fiabilité : <b>{fiab.derive !== null ? `${fiab.derive > 0 ? "+" : ""}${fiab.derive} h de dérive` : "—"}</b>
+            <span className="meta">sur {fiab.nb} tâche(s) clôturée(s)</span></li>
+          <li className="ligne">Reste à faire : <b>{h(restantTotal)}</b>
+            <span className="meta">→ fin estimée {finGlobale ? finGlobale.toLocaleDateString("fr-FR") : "—"}</span></li>
+        </ul>
+      </section>
+      <section className="card" aria-label="Par objectif">
+        <h3>Par objectif</h3>
+        {objectifs.length === 0 ? <p className="vide">Aucun objectif actif.</p> : (
+          <ul className="liste">
+            {objectifs.map((g) => {
+              const s = smartCheck(g, taches, vel.velocite, now);
+              const fin = estimeFinObjectif(g, taches, vel.velocite, now);
+              const complet = s.manquants.length === 0;
+              return (
+                <li className="ligne" key={g.id}>
+                  <span className="pastille" style={{ background: g.color }} />
+                  <b>{g.title}</b>
+                  <span className="meta">reste {h(s.restant)}</span>
+                  <span className={`badge ${complet ? "smart-ok" : "smart-ko"}`}>SMART {complet ? "5/5" : `${5 - s.manquants.length}/5`}</span>
+                  {s.risque && <span className="badge risque">⚠️ à risque</span>}
+                  <span className="meta">fin estimée {fin ? fin.toLocaleDateString("fr-FR") : "—"}</span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+      <section className="card" aria-label="Saisies par jour">
+        <h3>Saisies par jour (10 derniers)</h3>
+        {parJour.length === 0 ? <p className="vide">Aucune saisie de temps.</p> : (
+          <ul className="liste">
+            {parJour.slice(0, 10).map((j) => (
+              <li className="ligne" key={j.date}>{j.date} <span className="meta">{h(j.total)}</span></li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <section className="card" aria-label="Backlog par urgence">
+        <h3>Backlog par urgence</h3>
+        <ol>
+          {triParUrgence(taches.filter((t) => t.etat === "a_planifier" || t.etat === "planifiee"), data.goals, taches, vel.velocite, now).slice(0, 10).map((t) => (
+            <li key={t.id}>{t.title} <span className="meta">({h(t.restant)})</span></li>
+          ))}
+        </ol>
+      </section>
+    </>
   );
 }

@@ -57,51 +57,72 @@ export function Taches({ data, now, genId, majData, onOuvrirFiche }: Props) {
   };
 
   return (
-    <section aria-label="Tâches">
-      <h2>Tâches ({taches.length})</h2>
-      {erreur && <p role="alert" style={{ background: "#fee2e2", color: "#991b1b", padding: "0.5rem" }}>⚠️ {erreur}</p>}
-      {groupes.map((gr) => (
-        <section key={gr.etat}>
-          <h3>{etatLabel[gr.etat]} ({gr.items.length})</h3>
-          <ul>
-            {gr.items.map((t) => (
-              <li key={t.id}>
-                <button aria-label={`Ouvrir la fiche de ${t.title}`} style={{ minHeight: 44 }} onClick={() => onOuvrirFiche(t.id)}>{t.title}</button> — {h(t.restant)} restantes
-                {prochainEtat(t) !== t.etat && (
-                  <button aria-label={`Passer ${t.title} à ${etatLabel[prochainEtat(t)]}`} style={{ minHeight: 44, marginLeft: 8 }}
-                    onClick={() => transition(t, prochainEtat(t))}>
-                    → {etatLabel[prochainEtat(t)]}
-                  </button>
-                )}
-                {t.etat === "en_cours" && (
-                  saisieId === t.id ? (
-                    <span>
-                      <input type="number" min="0" step="0.5" value={temps} onChange={(e) => setTemps(e.target.value)} style={{ minHeight: 44, width: 80 }} aria-label="Temps total passé en heures" />
-                      <button style={{ minHeight: 44 }} onClick={() => validerSaisie(t)}>Valider</button>
-                    </span>
-                  ) : (
-                    <button aria-label={`Saisir du temps sur ${t.title}`} style={{ minHeight: 44, marginLeft: 8 }} onClick={() => setSaisieId(t.id)}>⏱ temps</button>
-                  )
-                )}
-                <button aria-label={`Supprimer ${t.title}`} style={{ minHeight: 44, marginLeft: 8 }}
-                  onClick={() => majData(deleteTask(data, t.id))}>🗑</button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-      <h3>Nouvelle tâche</h3>
-      <p><label>Titre <input value={titre} onChange={(e) => setTitre(e.target.value)} style={{ minHeight: 44 }} /></label></p>
-      <p><label>Objectif <select value={goalId} onChange={(e) => setGoalId(e.target.value)} style={{ minHeight: 44 }}>
-        <option value="">— choisir —</option>
-        {goalIds.map((id) => <option key={id} value={id}>{data.goals.find((g) => g.id === id)?.title}</option>)}
-      </select></label></p>
-      <p><label>Priorité <select value={prio} onChange={(e) => setPrio(e.target.value as Prio)} style={{ minHeight: 44 }}>
-        <option value="haute">haute</option><option value="moyenne">moyenne</option><option value="basse">basse</option>
-      </select></label></p>
-      <p><label>Estimation (h) <input type="number" min="0.5" step="0.5" value={estime} onChange={(e) => setEstime(e.target.value)} style={{ minHeight: 44, width: 80 }} /></label>
-        <label>Date <input type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ minHeight: 44 }} /></label></p>
-      <button onClick={creer} disabled={!titre.trim() || !goalId} style={{ minHeight: 44 }}>Créer la tâche</button>
-    </section>
+    <>
+      <section className="card" aria-label="Tâches">
+        <h2>Tâches ({taches.length})</h2>
+        {erreur && <p role="alert" className="alerte erreur">⚠️ {erreur}</p>}
+        {groupes.map((gr) => (
+          <section key={gr.etat} aria-label={etatLabel[gr.etat]}>
+            <h3>{etatLabel[gr.etat]} ({gr.items.length})</h3>
+            {gr.items.length === 0 ? <p className="vide">Aucune tâche.</p> : (
+              <ul className="liste">
+                {gr.items.map((t) => (
+                  <li className="ligne" key={t.id}>
+                    <button className="lien" aria-label={`Ouvrir la fiche de ${t.title}`} onClick={() => onOuvrirFiche(t.id)}>{t.title}</button>
+                    <span className={`badge ${t.prio}`}>{t.prio}</span>
+                    <span className="meta">{h(t.restant)} restantes</span>
+                    {prochainEtat(t) !== t.etat && (
+                      <button className="petite secondaire" aria-label={`Passer ${t.title} à ${etatLabel[prochainEtat(t)]}`}
+                        onClick={() => transition(t, prochainEtat(t))}>
+                        → {etatLabel[prochainEtat(t)]}
+                      </button>
+                    )}
+                    {t.etat === "en_cours" && (
+                      saisieId === t.id ? (
+                        <span>
+                          <input type="number" min="0" step="0.5" value={temps} onChange={(e) => setTemps(e.target.value)}
+                            style={{ minHeight: 44, width: 90, display: "inline-block" }} aria-label="Temps total passé en heures" />
+                          <button className="petite primaire" onClick={() => validerSaisie(t)}>Valider</button>
+                        </span>
+                      ) : (
+                        <button className="petite secondaire" aria-label={`Saisir du temps sur ${t.title}`} onClick={() => setSaisieId(t.id)}>
+                          ⏱ temps
+                        </button>
+                      )
+                    )}
+                    <button className="petite secondaire" aria-label={`Supprimer ${t.title}`}
+                      onClick={() => majData(deleteTask(data, t.id))}>🗑</button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+      </section>
+      <section className="card" aria-label="Nouvelle tâche">
+        <h3>Nouvelle tâche</h3>
+        <label className="champ"><span>Titre</span>
+          <input type="text" value={titre} onChange={(e) => setTitre(e.target.value)} />
+        </label>
+        <label className="champ"><span>Objectif</span>
+          <select value={goalId} onChange={(e) => setGoalId(e.target.value)}>
+            <option value="">— choisir —</option>
+            {goalIds.map((id) => <option key={id} value={id}>{data.goals.find((g) => g.id === id)?.title}</option>)}
+          </select>
+        </label>
+        <label className="champ"><span>Priorité</span>
+          <select value={prio} onChange={(e) => setPrio(e.target.value as Prio)}>
+            <option value="haute">haute</option><option value="moyenne">moyenne</option><option value="basse">basse</option>
+          </select>
+        </label>
+        <label className="champ"><span>Estimation (h)</span>
+          <input type="number" min="0.5" step="0.5" value={estime} onChange={(e) => setEstime(e.target.value)} style={{ maxWidth: 110 }} />
+        </label>
+        <label className="champ"><span>Date (optionnelle)</span>
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+        </label>
+        <button className="primaire" onClick={creer} disabled={!titre.trim() || !goalId}>Créer la tâche</button>
+      </section>
+    </>
   );
 }

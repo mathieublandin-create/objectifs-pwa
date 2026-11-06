@@ -19,28 +19,46 @@ export function Rituel({ data, now, onOuvrirFiche }: Props) {
     [taches, data.goals, now, auj]
   );
   const enCours = groupesParEtat(taches, data.goals).find((g) => g.etat === "en_cours")?.items ?? [];
+  const pct = capacite > 0 ? Math.min(100, Math.round((charge / capacite) * 100)) : 0;
 
   return (
-    <section aria-label="Rituels">
-      <h2>Rituel du jour — {auj}</h2>
-      <h3>🌅 Matin (7 h) — aujourd'hui : {duJour.length} tâche(s), {h(charge)} / capacité {capacite} h</h3>
-      <ul>
-        {duJour.map((t) => (
-          <li key={t.id}><button style={{ minHeight: 44 }} onClick={() => onOuvrirFiche(t.id)}>{t.title}</button> — {h(t.restant)} restantes</li>
-        ))}
-      </ul>
+    <>
+      <section className="card" aria-label="Rituel du matin">
+        <h2>🌅 Matin (7 h) — {auj}</h2>
+        <p className="meta">{duJour.length} tâche(s) aujourd'hui · {h(charge)} / capacité {capacite} h ({pct}%)</p>
+        <div className="barre" style={{ margin: "6px 0 10px" }}><div style={{ width: `${pct}%` }} /></div>
+        {duJour.length === 0 ? <p className="vide">Aucune tâche planifiée aujourd'hui.</p> : (
+          <ul className="liste">
+            {duJour.map((t) => (
+              <li className="ligne" key={t.id}>
+                <button className="lien" onClick={() => onOuvrirFiche(t.id)}>{t.title}</button>
+                <span className="meta">{h(t.restant)} restantes</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
       {enCours.length > 0 && (
-        <>
+        <section className="card" aria-label="Tâches en cours">
           <h3>▶ En cours</h3>
-          <ul>{enCours.map((t) => <li key={t.id}>{t.title} — {h(t.restant)} restantes</li>)}</ul>
-        </>
+          <ul className="liste">
+            {enCours.map((t) => <li className="ligne" key={t.id}>{t.title} <span className="meta">{h(t.restant)} restantes</span></li>)}
+          </ul>
+        </section>
       )}
-      <h3>🌙 Soir (21 h) — à planifier ensuite</h3>
-      <ol>
-        {backlog.slice(0, 10).map((t) => (
-          <li key={t.id}><button style={{ minHeight: 44 }} onClick={() => onOuvrirFiche(t.id)}>{t.title}</button> ({h(t.restant)})</li>
-        ))}
-      </ol>
-    </section>
+      <section className="card" aria-label="Rituel du soir">
+        <h3>🌙 Soir (21 h) — à planifier ensuite</h3>
+        {backlog.length === 0 ? <p className="vide">Backlog vide.</p> : (
+          <ol>
+            {backlog.slice(0, 10).map((t) => (
+              <li key={t.id}>
+                <button className="lien" onClick={() => onOuvrirFiche(t.id)}>{t.title}</button>{" "}
+                <span className="meta">({h(t.restant)})</span>
+              </li>
+            ))}
+          </ol>
+        )}
+      </section>
+    </>
   );
 }

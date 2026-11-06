@@ -18,6 +18,17 @@ import type { AppData } from "../domain/types";
 
 type Onglet = "accueil" | "objectifs" | "taches" | "calendrier" | "rituel" | "stats" | "journal" | "google";
 
+const ONGLETS: { id: Onglet; label: string }[] = [
+  { id: "accueil", label: "Accueil" },
+  { id: "objectifs", label: "Objectifs" },
+  { id: "taches", label: "Tâches" },
+  { id: "calendrier", label: "Calendrier" },
+  { id: "rituel", label: "Rituel" },
+  { id: "stats", label: "Stats" },
+  { id: "journal", label: "Journal" },
+  { id: "google", label: "Google" },
+];
+
 export function App() {
   const [data, setData] = useState<AppData | null>(null);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -58,29 +69,34 @@ export function App() {
     prevRef.current = d;
   };
 
-  if (!data) return <main style={{ fontFamily: "sans-serif", padding: "2rem" }}>Chargement…</main>;
+  if (!data) return <main className="contenu"><p>Chargement…</p></main>;
   const now = horlogeSysteme.maintenant();
   const genId = genIdSeq();
   const fiche = data.tasks.find((t) => t.id === ficheId);
   return (
     <>
-      {erreur && <p role="alert" style={{ background: "#fef3c7", color: "#92400e", padding: "0.5rem 1rem" }}>⚠️ {erreur}</p>}
-      <nav aria-label="Navigation" style={{ display: "flex", gap: 8, padding: "0.5rem 1rem", flexWrap: "wrap" }}>
-        {(["accueil", "objectifs", "taches", "calendrier", "rituel", "stats", "journal", "google"] as Onglet[]).map((o) => (
-          <button key={o} aria-current={onglet === o ? "page" : undefined} style={{ minHeight: 44 }}
-            onClick={() => setOnglet(o)}>
-            {o === "accueil" ? "Accueil" : o === "objectifs" ? "Objectifs" : o === "taches" ? "Tâches" : o === "calendrier" ? "Calendrier" : o === "rituel" ? "Rituel" : o === "stats" ? "Stats" : o === "journal" ? "Journal" : "Google"}
+      <header className="app-header">
+        <h1>🎯 Objectifs</h1>
+        <p className="version">v{APP_VERSION_M1} · schéma v9</p>
+      </header>
+      {erreur && <p role="alert" className="alerte avertissement">⚠️ {erreur}</p>}
+      <nav aria-label="Navigation" className="onglets">
+        {ONGLETS.map(({ id, label }) => (
+          <button key={id} aria-current={onglet === id ? "page" : undefined} onClick={() => setOnglet(id)}>
+            {label}
           </button>
         ))}
       </nav>
-      {onglet === "accueil" && <Accueil data={data} now={now} majData={majData} versionApp={APP_VERSION_M1} />}
-      {onglet === "objectifs" && <Objectifs data={data} now={now} genId={genId} majData={majData} />}
-      {onglet === "taches" && <Taches data={data} now={now} genId={genId} majData={majData} onOuvrirFiche={setFicheId} />}
-      {onglet === "calendrier" && <Calendrier data={data} now={now} majData={majData} onOuvrirFiche={setFicheId} />}
-      {onglet === "rituel" && <Rituel data={data} now={now} onOuvrirFiche={setFicheId} />}
-      {onglet === "stats" && <Stats data={data} now={now} />}
-      {onglet === "journal" && <JournalEcran journal={journal} />}
-      {onglet === "google" && <Google data={data} now={now} majData={majData} />}
+      <main className="contenu">
+        {onglet === "accueil" && <Accueil data={data} now={now} majData={majData} versionApp={APP_VERSION_M1} />}
+        {onglet === "objectifs" && <Objectifs data={data} now={now} genId={genId} majData={majData} />}
+        {onglet === "taches" && <Taches data={data} now={now} genId={genId} majData={majData} onOuvrirFiche={setFicheId} />}
+        {onglet === "calendrier" && <Calendrier data={data} now={now} majData={majData} onOuvrirFiche={setFicheId} />}
+        {onglet === "rituel" && <Rituel data={data} now={now} onOuvrirFiche={setFicheId} />}
+        {onglet === "stats" && <Stats data={data} now={now} />}
+        {onglet === "journal" && <JournalEcran journal={journal} />}
+        {onglet === "google" && <Google data={data} now={now} majData={majData} />}
+      </main>
       {fiche && <FicheTache data={data} task={fiche} now={now} genId={genId} majData={majData} onClose={() => setFicheId(null)} />}
     </>
   );
