@@ -5,7 +5,7 @@
   "description": "Objectifs — portage M1 (React 18 + TypeScript strict + Vite, ADR-15 amendant ADR-13). Socle M0 v0.13.0-m0 conservé en branche main.",
   "type": "module",
   "scripts": {
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && node inject-version.js",
     "test": "vitest run",
     "test:m0": "node --test tests/domain.test.js tests/livraison.test.js && node tests/bdd/runner.js"
   },
