@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npx tsc --noEmit
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: node tests/bdd/runner.js
 
   agent-rt:
@@ -52,7 +52,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - run: node tests/revue-rt.js
 
   agent-m0:
@@ -62,6 +62,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+      - run: node build.js # build M0 zero-dep -> dist/ (requis par les tests de livraison)
       - run: node --test tests/domain.test.js tests/livraison.test.js
       - run: node tests/bdd/runner.js
