@@ -1,0 +1,67 @@
+# Workflow « agents indépendants » (décision client 05/11/2026) — remplace l'orchestration
+# manuelle par 4 agents CI indépendants, exécutés en parallèle et bloquants sur PR :
+#   agent-dev       : tests unitaires + type-check + build (rôle développeur)
+#   agent-analyste  : suite BDD Gherkin (rôle analyste, .feature livrés et exécutables)
+#   agent-rt        : revue de code automatisée, règles statiques (rôle responsable technique)
+#   agent-m0        : non-régression M0 (tests natifs + livraison)
+# La revue de code n'attend plus de validation humaine (guide v1.11) : elle tourne ici, à chaque PR.
+name: Agents indépendants
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: agents-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  agent-dev:
+    name: Agent développeur (tests + tsc + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run build
+
+  agent-analyste:
+    name: Agent analyste (BDD Gherkin)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tests/bdd/runner.js
+
+  agent-rt:
+    name: Agent RT (revue automatisée)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node tests/revue-rt.js
+
+  agent-m0:
+    name: Non-régression M0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --test tests/domain.test.js tests/livraison.test.js
+      - run: node tests/bdd/runner.js
