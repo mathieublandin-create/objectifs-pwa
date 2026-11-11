@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Accueil } from "../screens/Accueil";
 import { Objectifs } from "../screens/Objectifs";
 import { Taches } from "../screens/Taches";
@@ -11,7 +11,11 @@ import { JournalEcran } from "../screens/Journal";
 import { ajouterEvenement, evenementsDeDiff, journalCle, type Journal } from "../journal/journal";
 import { chargerDonnees, sauvegarderDonnees } from "../storage/donnees";
 import { adaptateurIndexedDB } from "../storage/indexeddb";
-import { cleStockage } from "../storage/port";
+import { cleStockage, type PortStockage } from "../storage/port";
+import { googleConfigure, JETON_CLE } from "../google/config";
+import { adaptateurAuth } from "../google/auth";
+import { adaptateurDrive } from "../google/drive";
+import { adaptateurCalendar } from "../google/calendar";
 import { APP_VERSION_M1 } from "../domaineConstantes";
 import { genIdSeq, horlogeSysteme } from "../clock/horloge";
 import type { AppData } from "../domain/types";
@@ -36,6 +40,25 @@ export function App() {
   const [ficheId, setFicheId] = useState<string | null>(null);
   const [journal, setJournal] = useState<Journal>({ lots: [] });
   const prevRef = useRef<AppData | null>(null);
+
+  // M2 — adaptateurs Google réels quand le client OAuth est configuré (ADR-12) ;
+  // jetons conservés derrière le port de stockage, jamais dans le code.
+  const google = useMemo(() => {
+    if (!googleConfigure()) return null;
+    const stockageJeton: PortStockage = {
+      lire: (c) => { try { return localStorage.getItem(c); } catch { return null; } },
+      ecrire: (c, v) => { try { v ? localStorage.setItem(c, v) : localStorage.removeItem(c); } catch { /* stockage indisponible */ } },
+    };
+    const auth = adaptateurAuth({
+      lireJeton: () => stockageJeton.lire(JETON_CLE),
+      ecrireJeton: (j) => stockageJeton.ecrire(JETON_CLE, j ?? ""),
+    });
+    return {
+      auth,
+      drive: adaptateurDrive({ jeton: auth.jetonActuel }),
+      calendar: adaptateurCalendar({ jeton: auth.jetonActuel }),
+    };
+  }, []);
 
   useEffect(() => {
     const port = adaptateurIndexedDB();
@@ -95,7 +118,7 @@ export function App() {
         {onglet === "rituel" && <Rituel data={data} now={now} onOuvrirFiche={setFicheId} />}
         {onglet === "stats" && <Stats data={data} now={now} />}
         {onglet === "journal" && <JournalEcran journal={journal} />}
-        {onglet === "google" && <Google data={data} now={now} majData={majData} />}
+        {onglet === "google" && <Google data={data} now={now} majData={majData} versionApp={APP_VERSION_M1} google={google} />}
       </main>
       {fiche && <FicheTache data={data} task={fiche} now={now} genId={genId} majData={majData} onClose={() => setFicheId(null)} />}
     </>

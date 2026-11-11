@@ -1,2 +1,5 @@
 dist/
 node_modules/
+
+# M2 — config OAuth locale, jamais committée (ADR-12)
+.env.local

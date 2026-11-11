@@ -4,7 +4,7 @@ import type { Account } from "../domain/types";
 // Aucun secret dans le code : les jetons restent derrière le port de stockage (ADR-12).
 
 export interface PortAuthentification {
-  connecter(email: string, nom?: string): Promise<Account | null>;
+  connecter(): Promise<Account | null>; // M2 : l'email provient du userinfo OAuth
   deconnecter(): Promise<void>;
 }
 
