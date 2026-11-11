@@ -15,7 +15,7 @@ interface Props {
   google: { auth: AuthReelle; drive: PortDriveEtendu; calendar: ReturnType<typeof adaptateurCalendar>; sync: ReturnType<typeof adaptateurSync> } | null;
 }
 
-// US14/US1 — écran Google. M2 : OAuth/Drive/Calendar réels quand VITE_GOOGLE_CLIENT_ID
+// US14/US1 — écran Google. M2 : OAuth/Drive/Calendar réels quand VITE_OBJECTIFS_GOOGLE_CLIENT_ID
 // est configuré (ADR-12) ; sinon repli sur la simulation M1.
 export function Google({ data, now, majData, versionApp, google }: Props) {
   const [email, setEmail] = useState("");
@@ -69,7 +69,7 @@ export function Google({ data, now, majData, versionApp, google }: Props) {
     <>
       <section className="card" aria-label="Compte Google">
         <h2>Google (US14/US1)</h2>
-        {!google && <p className="alerte info">OAuth non configurée (VITE_GOOGLE_CLIENT_ID) — mode simulation M1.</p>}
+        {!google && <p className="alerte info">OAuth non configurée (VITE_OBJECTIFS_GOOGLE_CLIENT_ID) — mode simulation M1.</p>}
         {data.account ? (
           <p>Connecté : <b>{data.account.nom}</b> <span className="meta">({data.account.email})</span>{" "}
             <button className="petite secondaire" onClick={deconnecter} disabled={occupe}>Déconnecter</button></p>
