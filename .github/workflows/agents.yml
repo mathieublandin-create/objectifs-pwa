@@ -43,6 +43,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: node build.js # dist/ M0 requis par le scénario US34 (livrable PWA)
       - run: node tests/bdd/runner.js
 
   agent-rt:
@@ -53,6 +54,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: node build.js # dist/ M0 requis par le runner BDD (R4 / US34)
       - run: node tests/revue-rt.js
 
   agent-m0:
