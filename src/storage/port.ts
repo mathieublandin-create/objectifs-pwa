@@ -9,6 +9,9 @@ export function cleStockage(accountId: string | null): string {
   return accountId ? STORAGE_KEY + "::" + accountId : STORAGE_KEY;
 }
 
+// Timestamp de dernière écriture locale (synchro Drive V2-S2′)
+export const cleMaj = (accountId: string | null): string => cleStockage(accountId) + "::maj";
+
 export interface PortStockage {
   lire(cle: string): string | null;
   ecrire(cle: string, valeur: string): void;
