@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { compteDepuisEmail, statutSyncTache, synchroniserAgenda, actives } from "../domain/domaine";
-import { exporterDonnees, importerDonnees } from "../domain/exportImport";
-import { cleStockage } from "../storage/port";
 import type { AppData } from "../domain/types";
 import type { AuthReelle } from "../google/auth";
 import type { PortDriveEtendu } from "../google/drive";
 import type { adaptateurCalendar } from "../google/calendar";
+import type { adaptateurSync } from "../google/sync";
+import { GoogleDrive } from "./GoogleDrive";
 
 interface Props {
   data: AppData;
   now: Date;
   majData: (d: AppData) => void;
   versionApp: string;
-  google: { auth: AuthReelle; drive: PortDriveEtendu; calendar: ReturnType<typeof adaptateurCalendar> } | null;
+  google: { auth: AuthReelle; drive: PortDriveEtendu; calendar: ReturnType<typeof adaptateurCalendar>; sync: ReturnType<typeof adaptateurSync> } | null;
 }
 
 // US14/US1 — écran Google. M2 : OAuth/Drive/Calendar réels quand VITE_GOOGLE_CLIENT_ID
@@ -43,31 +43,6 @@ export function Google({ data, now, majData, versionApp, google }: Props) {
   const deconnecter = async () => {
     if (google) await google.auth.deconnecter();
     majData({ ...data, account: null });
-  };
-
-  const sauvegarderDrive = async () => {
-    if (!google || !data.account) return;
-    setOccupe(true);
-    try {
-      const json = exporterDonnees(data, { versionApp, dateIso: now.toISOString() } as any);
-      await google.drive.ecrireDistant(cleStockage(data.account.id), json);
-      setInfo("Sauvegarde Drive OK (appDataFolder, ADR-10)");
-      setErreur(null);
-    } catch (e) { setErreur((e as Error).message); }
-    finally { setOccupe(false); }
-  };
-
-  const chargerDrive = async () => {
-    if (!google || !data.account) return;
-    setOccupe(true);
-    try {
-      const txt = await google.drive.lireDistant(cleStockage(data.account.id));
-      if (!txt) { setErreur("Aucune sauvegarde distante trouvée"); return; }
-      const r = importerDonnees(txt);
-      if (r.data) { majData(r.data); setInfo("Données restaurées depuis Drive"); }
-      else setErreur(`Import refusé : ${r.erreur}`);
-    } catch (e) { setErreur((e as Error).message); }
-    finally { setOccupe(false); }
   };
 
   const lancerSync = async () => {
@@ -114,11 +89,9 @@ export function Google({ data, now, majData, versionApp, google }: Props) {
         {info && <p className="alerte info">ℹ️ {info}</p>}
       </section>
       {google && data.account && (
-        <section className="card" aria-label="Sauvegarde distante">
-          <h3>Drive appDataFolder (ADR-10)</h3>
-          <button className="secondaire" onClick={sauvegarderDrive} disabled={occupe}>💾 Sauvegarder sur Drive</button>{" "}
-          <button className="secondaire" onClick={chargerDrive} disabled={occupe}>📥 Restaurer depuis Drive</button>
-        </section>
+        <GoogleDrive data={data} now={now} versionApp={versionApp} occupe={occupe}
+          setOccupe={setOccupe} setErreur={setErreur} setInfo={setInfo} majData={majData}
+          drive={google.drive} sync={google.sync} />
       )}
       <section className="card" aria-label="Synchronisation agenda">
         <h3>Agenda</h3>

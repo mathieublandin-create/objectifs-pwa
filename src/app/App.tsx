@@ -11,11 +11,12 @@ import { JournalEcran } from "../screens/Journal";
 import { ajouterEvenement, evenementsDeDiff, journalCle, type Journal } from "../journal/journal";
 import { chargerDonnees, sauvegarderDonnees } from "../storage/donnees";
 import { adaptateurIndexedDB } from "../storage/indexeddb";
-import { cleStockage, type PortStockage } from "../storage/port";
+import { cleMaj, cleStockage, type PortStockage } from "../storage/port";
 import { googleConfigure, JETON_CLE } from "../google/config";
 import { adaptateurAuth } from "../google/auth";
 import { adaptateurDrive } from "../google/drive";
 import { adaptateurCalendar } from "../google/calendar";
+import { adaptateurSync } from "../google/sync";
 import { APP_VERSION_M1 } from "../domaineConstantes";
 import { genIdSeq, horlogeSysteme } from "../clock/horloge";
 import type { AppData } from "../domain/types";
@@ -53,10 +54,17 @@ export function App() {
       lireJeton: () => stockageJeton.lire(JETON_CLE),
       ecrireJeton: (j) => stockageJeton.ecrire(JETON_CLE, j ?? ""),
     });
+    const drive = adaptateurDrive({ jeton: auth.jetonActuel });
     return {
       auth,
-      drive: adaptateurDrive({ jeton: auth.jetonActuel }),
+      drive,
       calendar: adaptateurCalendar({ jeton: auth.jetonActuel }),
+      sync: adaptateurSync({
+        drive,
+        lireMaj: () => { try { return localStorage.getItem(cleMaj(null)); } catch { return null; } },
+        versionApp: APP_VERSION_M1,
+        now: horlogeSysteme.maintenant,
+      }),
     };
   }, []);
 
@@ -76,6 +84,8 @@ export function App() {
     setData(d);
     const port = adaptateurIndexedDB();
     sauvegarderDonnees(port, cleStockage(d.account?.id ?? null), d).catch(() => {});
+    // V2-S2′ — timestamp de dernière écriture locale (base du dernier écrivain gagne)
+    try { localStorage.setItem(cleMaj(d.account?.id ?? null), horlogeSysteme.maintenant().toISOString()); } catch { /* stockage indisponible */ }
     // US22 — trace par diff vers le journal (point de passage unique majData, ADR-06)
     if (prevRef.current) {
       const now = horlogeSysteme.maintenant();
