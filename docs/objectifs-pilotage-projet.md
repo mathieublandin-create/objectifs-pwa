@@ -212,3 +212,5 @@ Actions terminées (archivées) :
 **Suivi du 05/11 — workflow réel à agents indépendants (décision client, Mathieu)** : `.github/workflows/agents.yml` — 4 jobs CI parallèles et bloquants sur PR/main (agent-dev, agent-analyste BDD, agent-rt revue statique `tests/revue-rt.js`, agent-m0 non-régression). La revue de code RT devient un agent CI automatique (cohérent v1.11). Aucun impact calendaire.
 
 **Suivi du 05/11 — nommage de la config OAuth (décision client, Mathieu)** : la variable d'environnement est renommée `VITE_OBJECTIFS_GOOGLE_CLIENT_ID` (namespacée par application) pour éviter toute collision avec un `VITE_GOOGLE_CLIENT_ID` existant d'une autre application. `.env.local` inchangé (gitignoré).
+
+**Suivi du 05/11 — retour à VITE_GOOGLE_CLIENT_ID (décision client, Mathieu)** : la variable namespacée `VITE_OBJECTIFS_GOOGLE_CLIENT_ID` est abandonnée ; on conserve `VITE_GOOGLE_CLIENT_ID` (la valeur est celle du client OAuth créé pour cette application dans Google Cloud Console).
