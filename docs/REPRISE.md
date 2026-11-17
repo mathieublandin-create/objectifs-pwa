@@ -2,7 +2,9 @@
 
 Tu reprends le projet **« Objectifs »**, une application **personnelle** de gestion d'objectifs et de tâches (PWA offline-first, français, écosystème Google). Le client, décideur unique, est **Mathieu Blandin** (Bretagne, usage strictement personnel, professionnel de l'IT). Ce document te donne **tout l'état du projet** pour le poursuivre sans perte. Lis-le en entier avant d'agir, puis exécute la phase d'initialisation ci-dessous. Les documents de référence complets sont dans `docs/` (ce dossier).
 
-## 1. État des lieux (au 20/10/2026)
+## 1. État des lieux (mis à jour au 12/11/2026 à chaque reprise ; historique conservé ci-dessous)
+
+- **État au 12/11/2026 (soir)** : M0 livré (v0.13.0-m0, en ligne sur Pages) · **M1 terminé et mergé** (v0.14.0-m1 — PR #1 portage, PR #2 BDD US3–US14 59/59, PR #3 revue auto, PR #4 design system) · **M2 en cours de fermeture** : code livré (PR #5 adaptateurs OAuth/Drive/Calendar réels, PR #7 synchro Drive « dernier écrivain gagne », client ID en `.env.local` 12/11) — il reste la **mise en réel déployée** (secret Actions `VITE_GOOGLE_CLIENT_ID` + `deploy.yml` déjà prêt sur `vibe/m2-client-id-pages-43a03c`), **A-010** (écran de consentement OAuth « En production » + origine `https://mathieublandin-create.github.io` autorisée, par Mathieu) et la **recette réelle** US14-c5 / US1-c2 / V2-S2′ / r3(A-014) avec Mathieu · **M3 à lancer ensuite** (rappels Calendar des rituels, ADR-11). Vérifications de reprise 12/11 : Vitest 48/48, tsc+vite build OK, M0 11/11 + BDD 59/59, CI main verte. Compte code : 41 fichiers / 3 086 l. `src/`, 7 / 631 l. `tests/`, 14 `.feature`.
 
 - **Produit** : suivi d'objectifs SMART, tâches planifiées par time-blocking, charge en points (1 pt = 1 h), rituels matin/soir, journal d'activité, export/import complet. Vocabulaire métier **en français et figé** : états `a_planifier`, `planifiee`, `en_cours`, `terminee` ; priorités `haute`, `moyenne`, `basse`.
 - **Deux livrables** :

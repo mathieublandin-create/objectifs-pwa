@@ -13,6 +13,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # M2 (ADR-12) — client OAuth injecté au build Vite depuis les secrets du dépôt.
+      # Secret absent -> valeur vide -> l'app déployée reste en mode simulation M1 (comportement inchangé).
+      VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
